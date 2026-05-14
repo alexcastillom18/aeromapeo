@@ -617,22 +617,31 @@ function selectDoc(id) {
 }
 
 function openDocURL() {
-  const d = DOCS_DB.find(x=>x.id===activeDocId);
-  if(!d) { toast('⚠️ Selecciona un documento primero'); return; }
-  window.open(d.url, '_blank');
+    if (currentDoc && currentDoc.url) {
+        window.open(currentDoc.url, '_blank');
+    } else {
+        alert("Selecciona un documento de la lista primero.");
+    }
 }
 function copyDocURL() {
   const d = DOCS_DB.find(x=>x.id===activeDocId);
   if(!d) return;
   navigator.clipboard.writeText(d.url).then(()=>toast('🔗 URL copiada'));
-}
 function embedPDF() {
-  const d = DOCS_DB.find(x=>x.id===activeDocId);
-  if(!d) return;
-  document.getElementById('pdf-iframe').src = d.url;
-  document.getElementById('pdf-ph').style.display = 'none';
-  document.getElementById('pdf-iframe-wrap').classList.add('on');
-  toast('⬛ Cargando visor...');
+    if (currentDoc && currentDoc.url) {
+        const ph = document.getElementById('pdf-ph');
+        if (ph) ph.style.display = 'none';
+        
+        const wrap = document.getElementById('pdf-iframe-wrap');
+        const iframe = document.getElementById('pdf-iframe');
+        
+        if (wrap && iframe) {
+            wrap.style.display = 'block';
+            iframe.src = currentDoc.url;
+        }
+    } else {
+        alert("Selecciona un documento de la lista primero.");
+    }
 }
 function closePDF() {
   document.getElementById('pdf-ph').style.display = 'flex';
